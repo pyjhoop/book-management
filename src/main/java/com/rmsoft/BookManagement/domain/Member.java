@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Getter
+@Table(indexes = {@Index(columnList = "userId")})
 @Entity
 public class Member extends BaseEntity{
 
@@ -20,7 +21,7 @@ public class Member extends BaseEntity{
     @Setter @Column(columnDefinition = "VARCHAR(36)", nullable = false, unique = true)
     private String userId;
 
-    @Setter @Column(columnDefinition = "VARCHAR(36)", nullable = false)
+    @Setter @Column(nullable = false)
     private String password;
 
     @Setter @Column(columnDefinition = "VARCHAR(100)", nullable = false)
@@ -30,7 +31,7 @@ public class Member extends BaseEntity{
     private String phoneNumber;
 
     @OneToMany(mappedBy = "member")
-    private final List<LoanHistory> loanHistories = new ArrayList<>();
+    private final List<Book> books = new ArrayList<>();
 
     private Member(String userId, String password, String userName, String phoneNumber) {
         this.userId = userId;

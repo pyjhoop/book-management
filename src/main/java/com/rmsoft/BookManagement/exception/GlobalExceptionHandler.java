@@ -1,4 +1,4 @@
-package com.rmsoft.BookManagement.util;
+package com.rmsoft.BookManagement.exception;
 
 import com.rmsoft.BookManagement.dto.Api;
 import org.springframework.http.ResponseEntity;
