@@ -17,7 +17,7 @@ public class Member extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter @Column(columnDefinition = "VARCHAR(36)", nullable = false)
+    @Setter @Column(columnDefinition = "VARCHAR(36)", nullable = false, unique = true)
     private String userId;
 
     @Setter @Column(columnDefinition = "VARCHAR(36)", nullable = false)
@@ -26,7 +26,7 @@ public class Member extends BaseEntity{
     @Setter @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String userName;
 
-    @Setter @Column(columnDefinition = "VARCHAR(12)", nullable = false)
+    @Setter @Column(columnDefinition = "VARCHAR(12)", nullable = false, unique = true)
     private String phoneNumber;
 
     @OneToMany(mappedBy = "member")
