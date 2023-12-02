@@ -20,10 +20,10 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-
     public void signup(MemberRequest memberRequest){
 
         Optional<Member> optionalMember = memberRepository.findByUserId(memberRequest.getUserId());
+
 
         if(optionalMember.isEmpty()){
             Member member = memberRequest.toEntity();

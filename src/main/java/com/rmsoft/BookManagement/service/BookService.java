@@ -24,7 +24,6 @@ public class BookService {
     private final MemberService memberService;
 
     public void enrollBook(BookRequest bookRequest){
-        // 카테고리 불러오기
         BookCategory bookCategory = bookCategoryRepository.findById(Long.valueOf(bookRequest.getCategoryNo()))
                 .orElseThrow(()-> new RuntimeException("잘못된 카테고리입니다."));
 

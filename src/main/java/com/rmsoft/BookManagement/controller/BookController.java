@@ -72,7 +72,7 @@ public class BookController {
     @GetMapping("/books")
     public ResponseEntity<Api<?>> getBooksInfo(
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-            )
+        )
     {
 
         Page<BookResponse> responses = bookService.getBooks(pageable);
@@ -88,7 +88,7 @@ public class BookController {
     }
 
 
-    @PostMapping("/books/{bookId}/loan")
+    @PatchMapping("/books/{bookId}/loan")
     public ResponseEntity<Api<?>> loanBook(
             @PathVariable String bookId,
             @RequestBody MemberInfoRequest memberInfoRequest
@@ -105,7 +105,7 @@ public class BookController {
                         .build());
     }
 
-    @PostMapping("/books/{bookId}/return")
+    @PatchMapping("/books/{bookId}/return")
     public ResponseEntity<Api<?>> returnBook(
             @PathVariable String bookId
     )
