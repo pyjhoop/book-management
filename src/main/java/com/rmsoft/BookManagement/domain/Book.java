@@ -1,23 +1,13 @@
 package com.rmsoft.BookManagement.domain;
 
+import com.rmsoft.BookManagement.dto.BookRequest;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Getter
-@Table(indexes = {
-        @Index(columnList = "title"),
-        @Index(columnList = "author"),
-        @Index(columnList = "publisher")
-
-})
 @Entity
 public class Book extends BaseEntity{
 
@@ -37,21 +27,42 @@ public class Book extends BaseEntity{
     @Setter
     private String content;
 
-    @ManyToOne
+    @Setter
+    private String history;
+
+    @Setter @ManyToOne
     private BookCategory bookCategory;
 
-    @OneToMany(mappedBy = "book")
-    private final List<LoanHistory> loanHistories = new ArrayList<>();
+    @Setter @ManyToOne
+    private Member member;
 
-
-    private Book(String title, String author, String publisher, String content) {
+    private Book(String title, String author, String publisher, String content, BookCategory bookCategory) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
         this.content = content;
+        this.bookCategory = bookCategory;
     }
 
-    public static Book of(String title, String author, String publisher, String content) {
-        return new Book(title, author, publisher, content);
+    public static Book of(String title, String author, String publisher, String content, BookCategory bookCategory) {
+        return new Book(title, author, publisher, content, bookCategory);
+    }
+
+    public void update(BookRequest bookRequest, BookCategory bookCategory){
+        if (bookRequest.getTitle() != null) {
+            this.title = bookRequest.getTitle();
+        }
+        if (bookRequest.getAuthor() != null) {
+            this.author = bookRequest.getAuthor();
+        }
+        if (bookRequest.getPublisher() != null) {
+            this.publisher = bookRequest.getPublisher();
+        }
+        if (bookRequest.getContent() != null) {
+            this.content = bookRequest.getContent();
+        }
+        if (bookCategory != null) {
+            this.bookCategory = bookCategory;
+        }
     }
 }
