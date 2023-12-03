@@ -12,7 +12,7 @@ env:
   RESOURCE_PATH: ./src/main/resources/application.yml
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name : Checkout
@@ -26,7 +26,7 @@ jobs:
       - name: Set yml file
         uses: microsoft/variable-substitution@v1
         with:
-          files: ${{ env.RESOURCE_PATH}}
+          files: ${{ env.RESOURCE_PATH }}
         env:
           spring.datasource.url: ${{ secrets.DB_URL }}
           spring.datasource.username: ${{ secrets.DB_USER }}
@@ -42,16 +42,16 @@ jobs:
 
       #BUil 결과를 압축시키는 잡 파일명이 중복되지 않게 해준다.
       - name: Make zip file
-        run: zip -qq -r ./$GITHUB_SHA.zip .
+        run: zip -r ./$GITHUB_SHA .
         shell: bash
 
       # AWS에 접속하고 AWS 서비스를 사용하기 위한 권한 등록.
       - name: Configure AWS credentails
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: ${{ secrets.AWS_REGION}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
       # S3에 업로드함
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
