@@ -25,10 +25,10 @@ public class Book extends BaseEntity{
     @Setter @Column(nullable = false)
     private String publisher;
 
-    @Setter
+    @Setter @Column(columnDefinition = "VARCHAR(1000)")
     private String content;
 
-    @Setter
+    @Setter @Column(columnDefinition = "VARCHAR(10)")
     private String history;
 
     @Setter @ManyToOne

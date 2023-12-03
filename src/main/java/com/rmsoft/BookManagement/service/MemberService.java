@@ -46,7 +46,7 @@ public class MemberService {
         return validatorResult;
     }
 
-    public boolean checkMember(MemberInfoRequest request){
+    public Member checkMember(MemberInfoRequest request){
 
         Member member = memberRepository.findByUserId(request.getUserId())
                 .orElseThrow(()-> new RuntimeException("아이디가 잘못되었습니다."));
@@ -54,7 +54,7 @@ public class MemberService {
         boolean checkPwd = BCrypt.checkpw(request.getPassword(), member.getPassword());
 
         if(checkPwd){
-            return true;
+            return member;
         }else{
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
