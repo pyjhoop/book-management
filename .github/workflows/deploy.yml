@@ -1,0 +1,65 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  S3_BUCKET_NAME: book-yeonjun-bucket
+  CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
+  RESOURCE_PATH: ./src/main/resources/application.yml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name : Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Set yml file
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH}}
+        env:
+          spring.datasource.url: ${{ secrets.DB_URL }}
+          spring.datasource.username: ${{ secrets.DB_USER }}
+          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+      - name: Build with Gradle
+        run: ./gradlew build
+        shell: bash
+
+      #BUil 결과를 압축시키는 잡 파일명이 중복되지 않게 해준다.
+      - name: Make zip file
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      # AWS에 접속하고 AWS 서비스를 사용하기 위한 권한 등록.
+      - name: Configure AWS credentails
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{ secrets.AWS_REGION}}
+      # S3에 업로드함
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+
+      # Codedploy를 사용해서 s3에 올라와있는 파일을 가져다 배포까지
+      - name: Code Deploy To Ec2 instance
+        run: aws deploy create-deployment 
+                --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }}
+                --deployment-config-name CodeDeployDefault.AllAtOnce
+                --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }}
+                --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
