@@ -1,8 +1,9 @@
 package com.rmsoft.BookManagement.domain;
 
 import com.rmsoft.BookManagement.dto.BookRequest;
-import jakarta.persistence.*;
 import lombok.*;
+
+import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
