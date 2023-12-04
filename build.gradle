@@ -81,7 +81,7 @@ bootJar{
 }
 
 openapi3 {
-	server = "http://localhost:8080"
+	server = "http://3.35.240.175:8080"
 	title = "Book Manage Service API"
 	description = "도서관리 서비스 API 문서입니다."
 	version = "0.0.1"
