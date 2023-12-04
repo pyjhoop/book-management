@@ -92,10 +92,10 @@ class MemberServiceTest {
             given(memberRepository.findByUserId(memberInfoRequest.getUserId())).willReturn(Optional.of(member));
 
             //When
-            boolean result = memberService.checkMember(memberInfoRequest);
+            Member result = memberService.checkMember(memberInfoRequest);
 
             //Then
-            assertThat(result).isTrue();
+            assertThat(result).isNotNull();
         }
 
         @DisplayName("실패 케이스1(비밀번호 일치X)")

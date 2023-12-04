@@ -2,18 +2,18 @@ package com.rmsoft.BookManagement.service;
 
 import com.rmsoft.BookManagement.domain.Book;
 import com.rmsoft.BookManagement.domain.BookCategory;
+import com.rmsoft.BookManagement.domain.Member;
 import com.rmsoft.BookManagement.dto.BookRequest;
 import com.rmsoft.BookManagement.dto.BookResponse;
 import com.rmsoft.BookManagement.dto.MemberInfoRequest;
 import com.rmsoft.BookManagement.repository.BookCategoryRepository;
 import com.rmsoft.BookManagement.repository.BookRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,18 +60,16 @@ public class BookService {
     @Transactional
     public void loanBookWithUserInfo(String bookId, MemberInfoRequest request){
 
-        if(memberService.checkMember(request)){
-            Book book = bookRepository.findById(Long.valueOf(bookId))
-                    .orElseThrow(() -> new RuntimeException("bookId : " + bookId + "에 해당하는 도서가 없습니다."));
+        Member member = memberService.checkMember(request);
 
-            if(book.getHistory().equals("대출 가능")){
-                book.setHistory("대출 중");
-            }else{
-                throw new RuntimeException("bookId : "+ bookId + "에 해당하는 도서는 이미 대출 중 입니다.");
-            }
+        Book book = bookRepository.findById(Long.valueOf(bookId))
+                .orElseThrow(() -> new RuntimeException("bookId : " + bookId + "에 해당하는 도서가 없습니다."));
 
+        if(book.getHistory().equals("대출 가능")){
+            book.setMember(member);
+            book.setHistory("대출 중");
         }else{
-            throw new RuntimeException("회원정보가 일치하지 않습니다.");
+            throw new RuntimeException("bookId : "+ bookId + "에 해당하는 도서는 이미 대출 중 입니다.");
         }
 
     }
@@ -83,6 +81,7 @@ public class BookService {
 
         if(book.getHistory().equals("대출 중")) {
             book.setHistory("대출 가능");
+            book.setMember(null);
         }else{
             throw new RuntimeException("bookId : "+bookId+"는 현재 대출 가능한 도서입니다. 다시 시도해 주세요");
         }

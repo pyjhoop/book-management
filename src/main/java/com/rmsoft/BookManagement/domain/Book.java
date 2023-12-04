@@ -1,8 +1,9 @@
 package com.rmsoft.BookManagement.domain;
 
 import com.rmsoft.BookManagement.dto.BookRequest;
-import jakarta.persistence.*;
 import lombok.*;
+
+import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,10 +25,10 @@ public class Book extends BaseEntity{
     @Setter @Column(nullable = false)
     private String publisher;
 
-    @Setter
+    @Setter @Column(columnDefinition = "VARCHAR(1000)")
     private String content;
 
-    @Setter
+    @Setter @Column(columnDefinition = "VARCHAR(10)")
     private String history;
 
     @Setter @ManyToOne

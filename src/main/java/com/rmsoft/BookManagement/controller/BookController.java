@@ -1,10 +1,7 @@
 package com.rmsoft.BookManagement.controller;
 
 import com.rmsoft.BookManagement.domain.Book;
-import com.rmsoft.BookManagement.dto.Api;
-import com.rmsoft.BookManagement.dto.BookRequest;
-import com.rmsoft.BookManagement.dto.BookResponse;
-import com.rmsoft.BookManagement.dto.MemberInfoRequest;
+import com.rmsoft.BookManagement.dto.*;
 import com.rmsoft.BookManagement.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -76,6 +75,7 @@ public class BookController {
     {
 
         Page<BookResponse> responses = bookService.getBooks(pageable);
+
         log.info("Get books successfully");
 
         return ResponseEntity.status(200)
@@ -83,7 +83,7 @@ public class BookController {
                         .code(200)
                         .status("Ok")
                         .message("도서 정보가 성공적으로 조회되었습니다.")
-                        .data(responses)
+                        .data(BooksResponse.from(responses))
                         .build());
     }
 

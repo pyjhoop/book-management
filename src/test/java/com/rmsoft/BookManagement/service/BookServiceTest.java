@@ -2,9 +2,11 @@ package com.rmsoft.BookManagement.service;
 
 import com.rmsoft.BookManagement.domain.Book;
 import com.rmsoft.BookManagement.domain.BookCategory;
+import com.rmsoft.BookManagement.domain.Member;
 import com.rmsoft.BookManagement.dto.BookRequest;
 import com.rmsoft.BookManagement.dto.BookResponse;
 import com.rmsoft.BookManagement.dto.MemberInfoRequest;
+import com.rmsoft.BookManagement.dto.MemberRequest;
 import com.rmsoft.BookManagement.repository.BookCategoryRepository;
 import com.rmsoft.BookManagement.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 
 @DisplayName("BookService-Test")
@@ -184,10 +187,12 @@ class BookServiceTest {
         @Test
         void loanBookWithMemberInfo_WhenBookIsAvailable_ThenChangeBookHistory(){
             //Given
+            MemberRequest memberRequest = new MemberRequest("qwer123","qwer123!","박연준","01011112222");
+            Member member = memberRequest.toEntity();
             String bookId = "1";
             MemberInfoRequest request = new MemberInfoRequest("qwer123","password");
 
-            given(memberService.checkMember(request)).willReturn(true);
+            given(memberService.checkMember(request)).willReturn(member);
             given(bookRepository.findById(1L)).willReturn(Optional.of(book));
 
             //When
@@ -201,11 +206,13 @@ class BookServiceTest {
         @Test
         void loanBookWithMemberInfo_WhenBookIsNotAvailable_ThenThrowException(){
             //Given
+            MemberRequest memberRequest = new MemberRequest("qwer123","qwer123!","박연준","01011112222");
+            Member member = memberRequest.toEntity();
             String bookId = "1";
             book.setHistory("대출 중");
             MemberInfoRequest request = new MemberInfoRequest("qwer123","password");
 
-            given(memberService.checkMember(request)).willReturn(true);
+            given(memberService.checkMember(request)).willReturn(member);
             given(bookRepository.findById(1L)).willReturn(Optional.of(book));
 
             //When
@@ -222,7 +229,7 @@ class BookServiceTest {
             //Given
             String bookId = "1";
             MemberInfoRequest request = new MemberInfoRequest("qwer123","password");
-            given(memberService.checkMember(request)).willReturn(false);
+            doThrow(new RuntimeException("아이디가 잘못되었습니다.")).when(memberService).checkMember(request);
 
             //When
             Exception exception = assertThrows(RuntimeException.class, () -> {
@@ -230,7 +237,7 @@ class BookServiceTest {
             });
 
             //Then
-            assertEquals("회원정보가 일치하지 않습니다.", exception.getMessage());
+            assertEquals("아이디가 잘못되었습니다.", exception.getMessage());
         }
 
     }

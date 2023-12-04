@@ -3,7 +3,6 @@ package com.rmsoft.BookManagement.controller;
 import com.rmsoft.BookManagement.dto.Api;
 import com.rmsoft.BookManagement.dto.MemberRequest;
 import com.rmsoft.BookManagement.service.MemberService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @Slf4j
